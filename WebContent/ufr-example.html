@@ -1,0 +1,161 @@
+<html>
+<head>
+    <title>uFR JavaScript API</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="row" id="my_container">
+    <table style="width:800px;  border-collapse: collapse;">
+        <thead>
+        <tr>
+            <th colspan="4" style="text-align:center;">
+                <h2>uFR JavaScript API</h2>
+                <br>
+                <a href="http://www.d-logic.net/nfc-rfid-reader-sdk/" target="_blank">http://www.d-logic.net/nfc-rfid-reader-sdk/</a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr style="border-top:3pt solid darkgrey;">
+            <td colspan="4">
+                <label for="server_url">URL : </label>
+                <input id="server_url" type="text" value="http://localhost:8080">
+
+            </td>
+        <tr>
+            <td>
+                <button class="btn btn-success" onclick="openPort()">Open port</button>
+            </td>
+            <td>
+                <button class="btn btn-primary" onclick="startLoop()">Start Loop</button>
+            </td>
+            <td>
+                <button class="btn btn-info" onclick="getCardIdEx()">GetCardIdEx</button>
+            </td>
+            <td>
+                <button class="btn btn-info" onclick="getDlogicCardType()">GetDlogicCardType</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="btn btn-danger" onclick="closePort()">Close Port</button>
+            </td>
+            <td>
+                <button class="btn btn-warning" onclick="stopLoop()">Stop Loop</button>
+            </td>
+            <td colspan="2">
+                <label control-label for="card_uid_box">Card UID : </label>
+                <input type="text" readonly value="" id="card_uid_box">
+            </td>
+        </tr>
+        <tr style="border-top:2pt solid darkgrey;">
+            <td>
+                <button class="btn btn-default" onclick="BlockReadPK()">Block Read</button>
+            </td>
+            <td>
+                <select id="block_read_auth_mode">
+                    <option value="96">AUTH 1A</option>
+                    <option value="97">AUTH 1B</option>
+                </select>
+            </td>
+            <td>
+                <label>address:</label>
+                <input id="block_read_address" type="text" value="">
+            </td>
+            <td colspan="1">
+                <label>key :</label>
+                <input style="width:30px;" id="block_read_key1" type="text" value="255">
+                <input style="width:30px;" id="block_read_key2" type="text" value="255">
+                <input style="width:30px;" id="block_read_key3" type="text" value="255">
+                <input style="width:30px;" id="block_read_key4" type="text" value="255">
+                <input style="width:30px;" id="block_read_key5" type="text" value="255">
+                <input style="width:30px;" id="block_read_key6" type="text" value="255">
+            </td>
+        </tr>
+        <tr style="border-bottom:2pt solid darkgrey;">
+            <td colspan="4">
+                <label control-label for="block_read_result">Block Read Result:</label>
+                <input type="text" style="width:100%" id="block_read_result" value="" readonly>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <button class="btn btn-default" onclick="BlockWritePK()">Block Write</button>
+            </td>
+            <td>
+                <select id="block_write_auth_mode">
+                    <option value="96">AUTH 1A</option>
+                    <option value="97">AUTH 1B</option>
+                </select>
+            </td>
+            <td>
+                <label>address:</label>
+                <input id="block_write_address" type="text" value="">
+            </td>
+            <td colspan="1">
+                <label>key :</label>
+                <input style="width:30px;" id="block_write_key1" type="text" value="255">
+                <input style="width:30px;" id="block_write_key2" type="text" value="255">
+                <input style="width:30px;" id="block_write_key3" type="text" value="255">
+                <input style="width:30px;" id="block_write_key4" type="text" value="255">
+                <input style="width:30px;" id="block_write_key5" type="text" value="255">
+                <input style="width:30px;" id="block_write_key6" type="text" value="255">
+            </td>
+        </tr>
+        <tr style="border-bottom:2pt solid darkgrey;">
+            <td colspan="4">
+                <label control-label for="block_read_result">Block Write Data:</label>
+                <input type="text" style="width:100%" id="block_write_data" value="">
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <button class="btn btn-default" onclick="UIsignal()">UI Signal</button>
+            </td>
+            <td>
+                <select id="sound_mode">
+                    <option value="0">NONE</option>
+                    <option value="1">SINGLE_SOUND</option>
+                    <option value="2">LONG_SOUND</option>
+                    <option value="3">DOUBLE_SOUND</option>
+                    <option value="4">TRIPLE_SOUND</option>
+                    <option value="5">MELODY_SOUND</option>
+                </select>
+            </td>
+            <td colspan="2">
+                <select id="light_mode">
+                    <option value="0">NONE</option>
+                    <option value="1">LONG_GREEN</option>
+                    <option value="2">LONG_RED</option>
+                    <option value="3">DOUBLE_GREEN_RED</option>
+                    <option value="4">GREEN_RED_SAME_TIME</option>
+                </select>
+            </td>
+        </tr>
+        <tr></tr>
+        </tbody>
+        <tfoot>
+        <td colspan="4">
+            <button class="btn btn-default" onclick="clearResponseDisplay()">Clear</button>
+            <label control-label>append:</label>
+            <input type="checkbox" title="append" id="append_to_disp">
+            <label control-label for="res_disp">Response : </label>
+            <div>
+                <textarea style="width:800px;height:300px; resize: none;" readonly id="res_disp"
+                          name="textarea"></textarea>
+            </div>
+            <input type="text" id="dl_status" style="float:right;font-weight:bold" readonly>
+
+        </td>
+        </tfoot>
+    </table>
+
+</div>
+</body>
+<script src="js/uFR_API.js"></script>
+</html>
