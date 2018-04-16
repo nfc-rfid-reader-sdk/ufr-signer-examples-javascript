@@ -1,44 +1,126 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-	<!--DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"-->
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+﻿<!DOCTYPE html>
+<html>
 <head>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>uFR Signer</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/style.css">
+<meta
+   content="text/html; charset=utf-8"
+   http-equiv="Content-Type" />
+<title>uFR Signer</title>
+<link
+   rel="stylesheet"
+   href="css/bootstrap.min.css">
+<link
+   rel="stylesheet"
+   href="css/bootstrap-theme.min.css">
+<link
+   rel="stylesheet"
+   href="css/style.css">
 </head>
-
 <body>
-<div class="row" id="my_container">
-
-<table style="width: 800px; border-collapse: collapse;">
-<thead> 
-	<tr>
-		<th colspan="4" style="text-align: center;">
-			<h2>uFR Signer API</h2>
-			<a href="http://www.d-logic.net/nfc-rfid-reader-sdk/" target="_blank">http://www.d-logic.net/nfc-rfid-reader-sdk/</a>
-		</th>
-	</tr>
-</thead>
-
-<tfoot>
-	<tr>
-		<th colspan="4" style="text-align: left;">
-			<p>© Digital Logic ltd. 2018.</p>
-		</th>
-	</tr>
-</tfoot>
-
-<tbody>
-</tbody>
-</table>
-
-</div>
-
+   <div
+      class="row"
+      id="my_container">
+      <table style="width: 800px; border-collapse: collapse;">
+         <thead>
+            <tr style="border-top: 2pt solid darkgrey; border-bottom: 2pt solid darkgrey;">
+               <th
+                  colspan="3"
+                  style="text-align: center;">
+                  <h2>uFR Signer</h2> <a
+                  href="http://www.d-logic.net/nfc-rfid-reader-sdk/"
+                  target="_blank">http://www.d-logic.net/nfc-rfid-reader-sdk/</a>
+               </th>
+            </tr>
+         </thead>
+         <tfoot>
+            <tr>
+               <th
+                  colspan="3"
+                  style="text-align: left;">
+                  <p>© Digital Logic ltd. 2018.</p>
+               </th>
+            </tr>
+         </tfoot>
+         <tbody>
+            <tr style="border-bottom: 2pt solid darkgrey;">
+               <td><label for="digest_alg">Message digest algorithm:&nbsp</label><select id="digest_alg">
+                     <option value="0">NONE</option>
+                     <option
+                        value="1"
+                        selected="selected">SHA-1</option>
+                     <option value="2">SHA-224</option>
+                     <option value="3">SHA-256</option>
+                     <option value="4">SHA-384</option>
+                     <option value="5">SHA-512</option>
+               </select></td>
+               <td><label for="cipher_alg">Cipher algorithm:&nbsp</label> <select id="cipher_alg">
+                     <option value="0">RSA</option>
+                     <option value="1">ECDSA</option>
+               </select></td>
+               <td><label for="key_index">Key index (in card):&nbsp</label> <select id="key_index">
+                     <option value="0">0</option>
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+               </select></td>
+            </tr>
+            <tr>
+               <td colspan="3"><label for="plain_txt">Plain text (input message to sign):</label>
+                  <div>
+                     <textarea
+                        style="width: 800px; height: 200px; resize: none; font-family: sans-serif;"
+                        id="plain_txt"
+                        name="textarea"></textarea>
+                  </div>
+            </tr>
+            <tr style="border-bottom: 2pt solid darkgrey;">
+               <td
+                  colspan="3"
+                  style="text-align: right;">
+                  <button
+                     class="btn btn-danger"
+                     style="width: 140px;"
+                     onclick="clearPlain()">Clear Plain Text</button>
+               </td>
+            </tr>
+            <tr>
+               <td colspan="3"><label for="sign">Sign:</label>
+                  <div>
+                     <textarea
+                        style="width: 800px; height: 200px; resize: none; font-family: monospace;"
+                        id="sign"
+                        name="textarea"
+                        readonly></textarea>
+                  </div>
+            </tr>
+            <tr style="border-bottom: 2pt solid darkgrey;">
+               <td
+                  colspan="3"
+                  style="text-align: right;">
+                  <button
+                     class="btn btn-default"
+                     style="width: 140px;"
+                     onclick="Check()">Check Card</button> &nbsp
+                  <button
+                     class="btn btn-info"
+                     style="width: 140px;"
+                     onclick="Sign()">Get Signature</button> &nbsp
+                  <button
+                     class="btn btn-danger"
+                     style="width: 140px;"
+                     onclick="clearSignature()">Clear Signature</button>
+               </td>
+            </tr>
+            <tr style="border-bottom: 2pt solid darkgrey;">
+               <th
+                  colspan="3"
+                  style="text-align: right;"><label for="dl_status">Status:&nbsp</label> <input
+                  type="text"
+                  id="dl_status"
+                  style="width: 450px;"
+                  readonly></th>
+            </tr>
+         </tbody>
+      </table>
+   </div>
 </body>
-
 <script src="js/uFR_API.js"></script>
-
 </html>
