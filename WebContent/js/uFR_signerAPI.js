@@ -1,4 +1,4 @@
-/*!
+/* Used:
  * Bootstrap v3.3.6 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -42,10 +42,19 @@ var DlComands = {
     READER_UI_SIGNAL : "READER_UI_SIGNAL",
     BLOCK_READ_PK : "BLOCK_READ_PK",
     BLOCK_WRITE_PK : "BLOCK_WRITE_PK",
+    CHECK_JC_CARD : "CHECK_JC_CARD",
     SIGN : "SIGN"
 }
 
 var DL_OK = 0;
+
+function str2HexStr(hex)
+{
+    return hex.split('').map(function(c)
+    {
+        return c.charCodeAt(0).toString(16);
+    }).join("");
+}
 
 function Hex2Base64(hexstring)
 {
@@ -98,9 +107,14 @@ function rawResponseToObject(arg)
     return res;
 }
 
-function clearResponseDisplay()
+function clearPlain()
 {
-    document.getElementById("res_disp").value = "";
+    document.getElementById("plain_txt").value = "";
+}
+
+function clearSignature()
+{
+    document.getElementById("signature").value = "";
 }
 
 function print(arg, disp_uid)
@@ -167,7 +181,10 @@ function doAjax(param, disp_uid, callback)
             }
             else
             {
-                alert("Ajax Error" + xmlHttp.responseText + ". Please check if your SERVER is running.");
+                if (xmlHttp.responseText.length !== 0)
+                    alert("Ajax Error:\n" + xmlHttp.responseText);
+                else
+                    alert("Ajax Error\nPlease check if your SERVER is running.");
             }
         }
     }
@@ -179,68 +196,18 @@ function doAjaxMultipart(param, disp_uid, callback)
     var url = document.getElementById("server_url").value;
     var xmlHttp = GetXmlHttpObject();
     var formData = new FormData();
-    
+
     // ...
-    
-    var blob = new Blob([content], { type: "text/xml"});
+
+    var blob = new Blob([ content ], {
+        type : "text/xml"
+    });
     formData.append("uFrFunct=" + param);
     formData.append("webmasterfile", blob);
     xmlHttp.send(formData);
 }
 
-function startLoop()
-{
-    console.log("startLoop")
-    values.run_loop = true;
-    setInterval(function()
-    {
-
-        values.counter++;
-
-        if (values.run_loop)
-        {
-            console.log("run loop -> " + values.counter);
-
-            doAjax(DlComands.GET_CARD_ID_LAST_EX, true);
-
-        }
-        else
-        {
-            // console.log("skip loop -> " + values.counter);
-        }
-
-    }, 300);
-}
-
-function stopLoop()
-{
-    console.log("stopLoop")
-    values.run_loop = false;
-}
-
-function openPort()
-{
-    console.log("openPort")
-    doAjax(DlComands.OPEN_PORT, false, function(res)
-    {
-        data = rawResponseToObject(res);
-        document.getElementById("dl_status").value = data.dlMsg;
-
-    });
-}
-
-function closePort()
-{
-    console.log("closePort")
-    doAjax(DlComands.CLOSE_PORT, false, function(res)
-    {
-        data = rawResponseToObject(res);
-        document.getElementById("dl_status").value = data.dlMsg;
-
-    });
-}
-
-function getCardIdEx()
+function checkJCCard()
 {
     if (values.run_loop)
     {
@@ -248,77 +215,16 @@ function getCardIdEx()
         return;
     }
 
-    console.log("getCardIdEx")
-    doAjax(DlComands.GET_CARD_ID_EX, true, function(res)
-    {
-        data = rawResponseToObject(res);
-        document.getElementById("dl_status").value = data.dlMsg;
-
-    });
-}
-
-function UIsignal()
-{
-    if (values.run_loop)
-    {
-        alert("Please first pause loop!");
-        return;
-    }
-
-    console.log("UIsignal")
-    var sound = document.getElementById("sound_mode").value;
-    var light = document.getElementById("light_mode").value;
-    var param = DlComands.READER_UI_SIGNAL + "&iSoundMode=" + sound + "&iLightMode=" + light;
+    var param = DlComands.CHECK_JC_CARD;
 
     doAjax(param, false, function(res)
     {
         data = rawResponseToObject(res);
         document.getElementById("dl_status").value = data.dlMsg;
-
     });
 }
 
-function BlockReadPK()
-{
-
-    if (values.run_loop)
-    {
-        alert("Please first pause loop!");
-        return;
-    }
-
-    var authMode = document.getElementById("block_read_auth_mode").value;
-    var key1 = document.getElementById("block_read_key1").value;
-    var key2 = document.getElementById("block_read_key2").value;
-    var key3 = document.getElementById("block_read_key3").value;
-    var key4 = document.getElementById("block_read_key4").value;
-    var key5 = document.getElementById("block_read_key5").value;
-    var key6 = document.getElementById("block_read_key6").value;
-    var block_address = document.getElementById("block_read_address").value;
-
-    if (block_address < 0)
-    {
-        alert("Invalid block address");
-        return;
-    }
-
-    var param = DlComands.BLOCK_READ_PK + "&authMode=" + authMode + "&blockAddress=" + block_address;
-    param += "&key1=" + key1;
-    param += "&key2=" + key2;
-    param += "&key3=" + key3;
-    param += "&key4=" + key4;
-    param += "&key5=" + key5;
-    param += "&key6=" + key6;
-
-    doAjax(param, false, function(res)
-    {
-        data = rawResponseToObject(res);
-        document.getElementById("dl_status").value = data.dlMsg;
-        document.getElementById("block_read_result").value = splitAtEvery(data.data).join(" ");
-    });
-}
-
-function BlockWritePK()
+function getSignature()
 {
     if (values.run_loop)
     {
@@ -326,34 +232,17 @@ function BlockWritePK()
         return;
     }
 
-    var authMode = document.getElementById("block_write_auth_mode").value;
-    var key1 = document.getElementById("block_write_key1").value;
-    var key2 = document.getElementById("block_write_key2").value;
-    var key3 = document.getElementById("block_write_key3").value;
-    var key4 = document.getElementById("block_write_key4").value;
-    var key5 = document.getElementById("block_write_key5").value;
-    var key6 = document.getElementById("block_write_key6").value;
-    var block_address = document.getElementById("block_write_address").value;
-    var block_write_data = document.getElementById("block_write_data").value;
-
-    if (block_address < 1)
-    {
-        alert("Invalid block address");
-        return;
-    }
-
-    var param = DlComands.BLOCK_WRITE_PK + "&authMode=" + authMode + "&blockAddress=" + block_address + "&data=" + block_write_data;
-    param += "&key1=" + key1;
-    param += "&key2=" + key2;
-    param += "&key3=" + key3;
-    param += "&key4=" + key4;
-    param += "&key5=" + key5;
-    param += "&key6=" + key6;
+    var digest = document.getElementById("digest_alg").value;
+    var cipher = document.getElementById("cipher_alg").value;
+    var key_index = document.getElementById("key_index").value;
+    var plain = document.getElementById("plain_txt").value;
+    var param = DlComands.SIGN + "&digest=" + digest + "&cipher=" + cipher + "&key=" + key_index + "&plain=" + str2HexStr(plain);
 
     doAjax(param, false, function(res)
     {
         data = rawResponseToObject(res);
         document.getElementById("dl_status").value = data.dlMsg;
+        document.getElementById("signature").value = data.data;
     });
 }
 
@@ -384,15 +273,4 @@ function parseHexString(str)
         str = str.substring(8, str.length);
     }
     return result;
-}
-
-function getDlogicCardType()
-{
-    if (values.run_loop)
-    {
-        alert("Please first pause loop!");
-        return;
-    }
-    console.log("getDlogicCardType")
-    doAjax(DlComands.GET_DLOGIC_CARD_TYPE, false);
 }
