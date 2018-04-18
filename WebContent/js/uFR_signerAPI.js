@@ -102,7 +102,7 @@ function rawResponseToObject(arg)
         dlStatus : temp[0].split('=')[1],
         dlMsg : temp[1].split('=')[1],
         dlCommand : temp[2].split('=')[1],
-        data : temp[3].split('=')[1],
+        data : temp[3].split('=')[1]
     }
     return res;
 }
@@ -117,21 +117,26 @@ function clearSignature()
     document.getElementById("signature").value = "";
 }
 
+function clearStatus()
+{
+    dl_status = document.getElementById("dl_status")
+    dl_status.value = "";
+    dl_status.style.backgroundColor = "White";
+}
+
+function setStatus(arg)
+{
+    dl_status = document.getElementById("dl_status")
+    dl_status.value = arg;
+    if (arg == "DL_OK")
+        dl_status.style.backgroundColor = "LightGreen";
+    else
+        dl_status.style.backgroundColor = "MistyRose";
+}
+
 function print(arg, disp_uid)
 {
-    if (document.getElementById("append_to_disp").checked == "1")
-    {
-        document.getElementById("res_disp").value = document.getElementById("res_disp").value + "\n" + arg;
-    }
-    else
-    {
-        document.getElementById("res_disp").value = arg;
-    }
-
-    if (disp_uid)
-    {
-        printUid(arg);
-    }
+    document.getElementById("dl_status").value = arg;
 }
 
 function GetXmlHttpObject()
@@ -209,6 +214,8 @@ function doAjaxMultipart(param, disp_uid, callback)
 
 function checkJCCard()
 {
+    clearSignature()
+    clearStatus();
     if (values.run_loop)
     {
         alert("Please first pause loop!");
@@ -220,7 +227,8 @@ function checkJCCard()
     doAjax(param, false, function(res)
     {
         data = rawResponseToObject(res);
-        document.getElementById("dl_status").value = data.dlMsg;
+        setStatus(data.dlMsg);
+        document.getElementById("signature").value = data.data;
     });
 }
 
@@ -229,6 +237,12 @@ function getSignature()
     if (values.run_loop)
     {
         alert("Please first pause loop!");
+        return;
+    }
+
+    if (document.getElementById("plain_txt").value === "")
+    {
+        alert("\"Plain text\" couldn't be empty!");
         return;
     }
 
@@ -241,7 +255,7 @@ function getSignature()
     doAjax(param, false, function(res)
     {
         data = rawResponseToObject(res);
-        document.getElementById("dl_status").value = data.dlMsg;
+        setStatus(data.dlMsg);
         document.getElementById("signature").value = data.data;
     });
 }
