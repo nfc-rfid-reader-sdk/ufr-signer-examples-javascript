@@ -27,6 +27,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
+// uFR Signer API Version 1.1
+
 var values = {
     run_loop : false,
     counter : 0,
@@ -47,6 +49,22 @@ var DlComands = {
 }
 
 var DL_OK = 0;
+
+window.onload = function() {
+    getTitleByOS();
+};
+  
+function getTitleByOS()
+{
+    var OSName = "Unknown";
+    if (window.navigator.userAgent.indexOf("Windows") != -1) OSName="Windows";
+    else if (window.navigator.userAgent.indexOf("Linux") != -1) OSName="Linux";
+    else if (window.navigator.userAgent.indexOf("Mac") != -1) OSName="macOS / iOS";
+    else if (window.navigator.userAgent.indexOf("X11") != -1) OSName="UNIX";
+    
+    if (OSName !== "Unknown")
+        document.getElementById("h2_title").innerHTML = "uFR Signer running on " + OSName
+}
 
 function str2HexStr(hex)
 {
