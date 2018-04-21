@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
-// uFR Signer API Version 1.1
+// uFR Signer API Version 1.2
 
 var values = {
     run_loop : false,
@@ -70,7 +70,28 @@ function str2HexStr(hex)
 {
     return hex.split('').map(function(c)
     {
-        return c.charCodeAt(0).toString(16);
+        i = c.charCodeAt(0); // Unicode16 
+        if (i < 256)
+            return i.toString(16);
+        else
+            return '3F'; // Strict ASCII encoding transformation - ASCII code 0x3F is for '?'
+        /*/ Encoding("windows-1250") for Serbian characters only:
+        switch (i)
+        {
+            
+            case 352: return '8A'; break; // Š
+            case 272: return 'D0'; break; // Đ
+            case 268: return 'C8'; break; // Č
+            case 262: return 'C6'; break; // Ć
+            case 381: return '8E'; break; // Ž
+            case 353: return '9A'; break; // š
+            case 273: return 'F0'; break; // đ
+            case 269: return 'E8'; break; // č
+            case 263: return 'E6'; break; // ć
+            case 382: return '9E'; break; // ž
+            default: return (i & 0xFF).toString(16);
+        }
+        */
     }).join("");
 }
 
